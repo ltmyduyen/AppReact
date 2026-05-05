@@ -47,7 +47,7 @@ const RevenueScreen = () => {
         return () => unsub();
     }, []);
 
-    // ===== FILTER =====
+    // ===== FILTER ====
     const filterOrders = () => {
         const now = new Date();
 
