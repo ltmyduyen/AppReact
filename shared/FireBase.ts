@@ -1,6 +1,6 @@
-// ===============================
+// =================================
 // 🔥 Firebase config cho toàn app
-// ===============================
+// ============================app
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
