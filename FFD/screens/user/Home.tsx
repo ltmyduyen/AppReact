@@ -109,26 +109,27 @@ const HomeScreen: React.FC = () => {
     useContext(CartContext)!;
   const totalItems = getTotalItems(selectedBranch || undefined);
 
-  /* Lấy danh sách chi nhánh (nếu chưa chọn branch thì random 1 cái) */
-  useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "branches"), async (snapshot) => {
-      const branchList = snapshot.docs.map((d) => ({
-        id: d.id,
-        name: (d.data() as any).name,
-      }));
-      setBranches(branchList);
+  /* Lấy danh sách chi nhánh (chỉ lấy chi nhánh 1 làm mặc định) */
+useEffect(() => {
+  const unsubscribe = onSnapshot(collection(db, "branches"), async (snapshot) => {
+    const branchList = snapshot.docs.map((d) => ({
+      id: d.id,
+      name: d.data().name,
+    }));
 
-      if (!selectedBranch && branchList.length > 0) {
-        // random 1 chi nhánh mặc định
-        const random = branchList[Math.floor(Math.random() * branchList.length)].id;
-        setSelectedBranch(random);
-        await AsyncStorage.setItem("selectedBranch", random);
-      }
-    });
-    return unsubscribe;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setBranches(branchList);
 
+    if (!selectedBranch && branchList.length > 0) {
+      // luôn lấy chi nhánh đầu tiên thay vì random
+      const firstBranch = branchList[0].id;
+
+      setSelectedBranch(firstBranch);
+      await AsyncStorage.setItem("selectedBranch", firstBranch);
+    }
+  });
+
+  return unsubscribe;
+}, []);
   /* Lấy món theo chi nhánh hiện tại: 
      - Nếu chi nhánh có branchFoods (isAvailable true) => dùng các món đó
      - Nếu không => fallback toàn bộ foods
